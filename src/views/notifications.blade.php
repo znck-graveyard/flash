@@ -6,4 +6,5 @@
             @include('flash::message', $notification)
         @endif
     @endforeach
+    <?php Session::pull('flash_notification'); ?>
 @endif
