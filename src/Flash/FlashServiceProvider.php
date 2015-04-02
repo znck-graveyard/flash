@@ -21,7 +21,8 @@ class FlashServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             'Znck\Flash\SessionStore',
-            'Znck\Flash\LaravelSessionStore'
+            'Znck\Flash\LaravelSessionStore',
+            'Znck\Flash\LaravelCollection'
         );
 
         $this->app->bindShared('flash', function () {
@@ -36,10 +37,10 @@ class FlashServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__ . '/../../views', 'flash');
+        $this->loadViewsFrom(__DIR__ . '/../views', 'flash');
 
         $this->publishes([
-            __DIR__ . '/../../views' => base_path('resources/views/vendor/flash')
+            __DIR__ . '/../views' => base_path('resources/views/vendor/flash')
         ]);
     }
 
