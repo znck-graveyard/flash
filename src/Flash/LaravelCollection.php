@@ -21,7 +21,7 @@ class LaravelCollection
 
     function __construct(SessionStore $sessionStore)
     {
-        $messages = $sessionStore->get('flash_notification');
+        $messages = session('flash_notification', null);
         if (!$messages) {
             $messages = new Collection;
         }
