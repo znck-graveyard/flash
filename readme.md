@@ -6,7 +6,7 @@ First, pull in the package through Composer.
 
 ```js
 "require": {
-    "laracasts/flash": "~1.3"
+    "znck/flash": "~1.0"
 }
 ```
 
@@ -14,7 +14,7 @@ And then, if using Laravel 5, include the service provider within `app/config/ap
 
 ```php
 'providers' => [
-    'Laracasts\Flash\FlashServiceProvider'
+    'Znck\Flash\FlashServiceProvider'
 ];
 ```
 
@@ -22,7 +22,7 @@ And, for convenience, add a facade alias to this same file at the bottom:
 
 ```php
 'aliases' => [
-    'Flash' => 'Laracasts\Flash\Flash'
+    'Flash' => 'Znck\Flash\Flash'
 ];
 ```
 
@@ -47,12 +47,16 @@ You may also do:
 - `Flash::warning('Message')`
 - `Flash::overlay('Modal Message', 'Modal Title')`
 
-Again, if using Laravel, this will set a few keys in the session:
+This will set a few keys in the session:
 
-- 'flash_notification.message' - The message you're flashing
-- 'flash_notification.level' - A string that represents the type of notification (good for applying HTML class names)
+- 'flash_notification' - Session key for flash notification's message bag
 
-Alternatively, again, if you're using Laravel, you may reference the `flash()` helper function, instead of the facade. Here's an example:
+Each message will have these keys:
+
+- 'message' - The message you're flashing
+- 'level' - A string that represents the type of notification (good for applying HTML class names)
+
+Alternatively, again, you may reference the `flash()` helper function, instead of the facade. Here's an example:
 
 ```
 /**
@@ -75,12 +79,14 @@ Or, for a general information flash, just do: `flash('Some message');`.
 With this message flashed to the session, you may now display it in your view(s). Maybe something like:
 
 ```html
-@if (Session::has('flash_notification.message'))
-    <div class="alert alert-{{ Session::get('flash_notification.level') }}">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-
-        {{ Session::get('flash_notification.message') }}
-    </div>
+@if (Session::has('flash_notification'))
+    @foreach(session('flash_notification') as $notification)
+        @if(array_get($notification, 'title', false))
+            @include('flash::modal', $notification)
+        @else
+            @include('flash::message', $notification)
+        @endif
+    @endforeach
 @endif
 ```
 
@@ -89,7 +95,7 @@ With this message flashed to the session, you may now display it in your view(s)
 Because flash messages and overlays are so common, if you want, you may use (or modify) the views that are included with this package. Simply append to your layout view:
 
 ```html
-@include('flash::message')
+@include('flash::notifications')
 ```
 
 ## Example
