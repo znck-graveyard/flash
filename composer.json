@@ -1,6 +1,6 @@
 {
   "name": "znck/flash",
-  "description": "Easy flash notifications",
+  "description": "Easy flash notifications for laravel 5",
   "homepage": "https://github.com/znck/flash",
   "license": "MIT",
   "authors": [
