@@ -19,8 +19,12 @@ class LaravelCollection
      */
     private $messages;
 
-    function __construct(Collection $messages)
+    function __construct(SessionStore $sessionStore)
     {
+        $messages = $sessionStore->get('flash_notification');
+        if (!$messages) {
+            $messages = new Collection;
+        }
         $this->messages = $messages;
     }
 
