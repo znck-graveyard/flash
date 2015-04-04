@@ -1,31 +1,38 @@
 <?php namespace Znck\Flash;
 
+use Illuminate\Session\Store;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Session;
+
 class FlashNotifier
 {
     /**
      * The message container.
      *
-     * @var LaravelCollection
+     * @type \Illuminate\Support\Collection
      */
     private $messages;
 
-    /**
-     * The session writer.
-     *
-     * @var SessionStore
-     */
+
     private $session;
 
     /**
      * Create a new flash notifier instance.
      *
-     * @param SessionStore                  $session
-     * @param \Znck\Flash\LaravelCollection $messages
+     * @param \Illuminate\Session\Store      $session
+     * @param \Illuminate\Support\Collection $messages
      */
-    function __construct(SessionStore $session, LaravelCollection $messages)
+    function __construct(Store $session, Collection $messages)
     {
         $this->session = $session;
         $this->messages = $messages;
+
+        $messages = $session->get('flash_notification', null);
+        if (!is_null($messages)) {
+            foreach ($messages as $key => $message) {
+                $this->messages->put($key, $message);
+            }
+        }
     }
 
     /**
@@ -98,9 +105,9 @@ class FlashNotifier
      */
     public function overlay($message, $title = 'Notice', $level = 'info', $overlay = true)
     {
-        $this->messages->add(compact('message', 'level', 'title', 'overlay'));
+        $this->messages->put(md5($message . $level . $title . $overlay), compact('message', 'level', 'title', 'overlay'));
 
-        $this->session->flash('flash_notification', $this->messages->messages());
+        $this->session->flash('flash_notification', $this->messages);
 
         return $this;
     }
@@ -115,9 +122,9 @@ class FlashNotifier
      */
     public function message($message, $level = 'info')
     {
-        $this->messages->add(compact('message', 'level'));
+        $this->messages->put(md5($message . $level), compact('message', 'level'));
 
-        $this->session->flash('flash_notification', $this->messages->messages());
+        $this->session->flash('flash_notification', $this->messages);
 
         return $this;
     }

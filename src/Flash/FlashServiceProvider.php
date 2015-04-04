@@ -19,12 +19,6 @@ class FlashServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(
-            'Znck\Flash\SessionStore',
-            'Znck\Flash\LaravelSessionStore',
-            'Znck\Flash\LaravelCollection'
-        );
-
         $this->app->bindShared('flash', function () {
             return $this->app->make('Znck\Flash\FlashNotifier');
         });
@@ -43,5 +37,11 @@ class FlashServiceProvider extends ServiceProvider
             __DIR__ . '/../views' => base_path('resources/views/vendor/flash')
         ]);
     }
+
+    public function provides()
+    {
+        return ['flash'];
+    }
+
 
 }

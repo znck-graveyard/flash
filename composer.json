@@ -11,10 +11,13 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "illuminate/support": "~5.0"
+    "illuminate/support": "~5.0",
+    "illuminate/session": "~5.0"
   },
   "require-dev": {
-    "mockery/mockery": "dev-master"
+    "orchestra/testbench": "3.1.*",
+    "mockery/mockery": "dev-master",
+    "phpunit/phpunit": "~4.8@dev"
   },
   "autoload": {
     "psr-4": {
@@ -24,5 +27,5 @@
       "src/Flash/functions.php"
     ]
   },
-  "minimum-stability": "stable"
+  "minimum-stability": "dev"
 }
