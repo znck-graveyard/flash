@@ -1,4 +1,5 @@
-# Flash - Easy flash notifications for Laravel 5
+# Flash ![](https://img.shields.io/github/issues/znck/flash.svg) ![](https://img.shields.io/travis/znck/flash.svg) ![](https://img.shields.io/github/release/znck/flash.svg) ![](https://img.shields.io/packagist/v/znck/flash.svg) ![](https://img.shields.io/packagist/dt/znck/flash.svg) ![](https://img.shields.io/packagist/l/znck/flash.svg)
+Easy flash notifications for Laravel 5
 
 ## Installation
 
