@@ -22,6 +22,8 @@ class FlashServiceProvider extends ServiceProvider
         $this->app->bindShared('flash', function () {
             return $this->app->make('Znck\Flash\FlashNotifier');
         });
+
+        $this->mergeConfigFrom(__DIR__ . '/../config/flash.php', 'znck.flash');
     }
 
     /**
@@ -34,7 +36,8 @@ class FlashServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../views', 'flash');
 
         $this->publishes([
-            __DIR__ . '/../views' => base_path('resources/views/vendor/flash')
+            __DIR__ . '/../views'            => base_path('resources/views/vendor/znck/flash'),
+            __DIR__ . '/../config/flash.php' => config_path('znck/flash.php'),
         ]);
     }
 

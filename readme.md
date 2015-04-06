@@ -1,4 +1,4 @@
-# Easy Flash Messages
+# Flash - Easy flash notifications for Laravel 5
 
 ## Installation
 
@@ -6,7 +6,7 @@ First, pull in the package through Composer.
 
 ```js
 "require": {
-    "znck/flash": "~1.0"
+    "znck/flash": "~1.2"
 }
 ```
 
@@ -49,12 +49,13 @@ You may also do:
 
 This will set a few keys in the session:
 
-- 'flash_notification' - Session key for flash notification's message bag
+- 'znck.flash.notifications' - Session key for flash notification's message bag
 
 Each message will have these keys:
 
 - 'message' - The message you're flashing
-- 'level' - A string that represents the type of notification (good for applying HTML class names)
+- 'level' - A string that represents the HTML class for displaying the message
+- 'sort' - Level weight used to sort the messages.
 
 Alternatively, again, you may reference the `flash()` helper function, instead of the facade. Here's an example:
 
@@ -76,18 +77,54 @@ public function destroy()
 
 Or, for a general information flash, just do: `flash('Some message');`.
 
-With this message flashed to the session, you may now display it in your view(s). Maybe something like:
+With this message flashed to the session, you may now display it in your view(s). 
+Maybe something like:
 
 ```html
-@if (Session::has('flash_notification'))
-    @foreach(session('flash_notification') as $notification)
-        @if(array_get($notification, 'title', false))
-            @include('flash::modal', $notification)
-        @else
-            @include('flash::message', $notification)
-        @endif
-    @endforeach
-@endif
+@foreach(flash()->get() as $notification)
+    <div class="alert alert-{{ $notification['level'] }}">
+        <button type="button" class="close" data-dismiss="alert" aria hidden="true">&times;</button>
+
+        {!! $notification['message'] !!}
+    </div>
+@endforeach
+```
+
+You may also do:
+
+- Flash::get()
+- flash()->get()
+
+`Flash::get()` or `flash()->get()` function can take an optional variable to filter the result.
+Eg:
+
+```
+php
+Flash::get('*'); // To get all messages.
+Flash::get('info'); // To get only messages with info level.
+Flash::get('info|warning'); // To get messages with info or warning level
+    
+```
+
+You can publish the config file to add custom message levels and reorder messages.
+
+```php
+// Default messagle levels and their sort order
+[
+    'classes' => [
+        'error'   => 'danger',
+        'warning' => 'warning',
+        'success' => 'success',
+        'info'    => 'info',
+    ],
+
+    'levels'  => [
+        'error'   => 400,
+        'warning' => 300,
+        'success' => 200,
+        'info'    => 100,
+    ]
+];
 ```
 
 > Note that this package is optimized for use with Twitter Bootstrap.
@@ -95,7 +132,7 @@ With this message flashed to the session, you may now display it in your view(s)
 Because flash messages and overlays are so common, if you want, you may use (or modify) the views that are included with this package. Simply append to your layout view:
 
 ```html
-@include('flash::notifications')
+@include('znck::flash.notifications')
 ```
 
 ## Example

@@ -1,10 +1,7 @@
-@if (Session::has('flash_notification'))
-    @foreach(session('flash_notification') as $notification)
-        @if(array_get($notification, 'title', false))
-            @include('flash::modal', $notification)
-        @else
-            @include('flash::message', $notification)
-        @endif
-    @endforeach
-    <?php Session::pull('flash_notification'); ?>
-@endif
+@foreach(flash()->get() as $notification)
+    @if(array_get($notification, 'title', false))
+        @include('znck::flash.modal', $notification)
+    @else
+        @include('znck::flash.message', $notification)
+    @endif
+@endforeach

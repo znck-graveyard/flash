@@ -10,7 +10,6 @@ class FlashTest extends Orchestra\Testbench\TestCase
         return ['Znck\Flash\FlashServiceProvider'];
     }
 
-
     public function test_it_sets_session_key()
     {
 
@@ -18,24 +17,31 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
         $flash->error('error message');
 
-        $this->assertSessionHas('flash_notification');
+        $this->assertSessionHas('znck.flash.notifications');
 
         $this->getSession()->flush();
     }
 
-    public function test_error_message()
+    public function test_it_loads_messages_from_session()
+    {
+        $flash1 = $this->getFlash();
+        $flash1->message('Test Message');
+
+        $flash2 = $this->getFlash();
+        assertEquals(1, count($flash2->get()));
+    }
+
+    public function test_if_can_flash_error_message()
     {
         $message = 'Error Message';
-        $level = 'danger';
+        $level = 'error';
 
         $key = md5($message . $level);
 
         $flash = $this->getFlash();
         $flash->error($message);
 
-        $session = $this->getSession();
-        $this->assertSessionHas('flash_notification');
-        $notifications = $session->get('flash_notification');
+        $notifications = $flash->get('error');
 
 
         assertEquals(1, count($notifications));
@@ -46,10 +52,9 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
         assertEquals($message, $notification['message']);
 
-        assertEquals($level, $notification['level']);
     }
 
-    public function test_warning_message()
+    public function test_it_can_flash_warning_message()
     {
         $message = 'Warning Message';
         $level = 'warning';
@@ -59,9 +64,7 @@ class FlashTest extends Orchestra\Testbench\TestCase
         $flash = $this->getFlash();
         $flash->warning($message);
 
-        $session = $this->getSession();
-        $this->assertSessionHas('flash_notification');
-        $notifications = $session->get('flash_notification');
+        $notifications = $flash->get('warning');
 
 
         assertEquals(1, count($notifications));
@@ -72,10 +75,9 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
         assertEquals($message, $notification['message']);
 
-        assertEquals($level, $notification['level']);
     }
 
-    public function test_many_messages()
+    public function test_it_can_flash_many_messages()
     {
 
         $messages = [
@@ -93,14 +95,12 @@ class FlashTest extends Orchestra\Testbench\TestCase
             $flash->error($message);
         }
 
-        $session = $this->getSession();
-        $this->assertSessionHas('flash_notification');
-        $notifications = $session->get('flash_notification');
+        $notifications = $flash->get();
 
         assertEquals(count($messages), count($notifications));
     }
 
-    public function test_many_messages_with_repeating_messages()
+    public function test_it_flashes_message_only_once()
     {
 
         $messages = [
@@ -118,11 +118,84 @@ class FlashTest extends Orchestra\Testbench\TestCase
             $flash->error($message);
         }
 
-        $session = $this->getSession();
-        $this->assertSessionHas('flash_notification');
-        $notifications = $session->get('flash_notification');
+        $notifications = $flash->get();
 
         assertEquals(count(array_unique($messages)), count($notifications));
+    }
+
+    public function test_it_returns_filtered_messages()
+    {
+        $messages = [
+            ['level' => 'info', 'message' => 'message text 1'],
+            ['level' => 'error', 'message' => 'message text 2'],
+            ['level' => 'error', 'message' => 'message text 3'],
+            ['level' => 'warning', 'message' => 'message text 4'],
+            ['level' => 'warning', 'message' => 'message text 5'],
+            ['level' => 'warning', 'message' => 'message text 6'],
+            ['level' => 'success', 'message' => 'message text 7'],
+            ['level' => 'success', 'message' => 'message text 8'],
+            ['level' => 'success', 'message' => 'message text 9'],
+            ['level' => 'success', 'message' => 'message text 10'],
+        ];
+
+        $flash = $this->getFlash();
+
+        foreach ($messages as $message) {
+            $flash->message($message['message'], $message['level']);
+        }
+
+        assertEquals(1, count($flash->get('info')));
+        assertEquals(2, count($flash->get('error')));
+        assertEquals(3, count($flash->get('warning')));
+        assertEquals(4, count($flash->get('success')));
+
+        assertEquals(3, count($flash->get('info|error')));
+        assertEquals(4, count($flash->get('info|warning')));
+        assertEquals(5, count($flash->get('info|success')));
+
+        assertEquals(5, count($flash->get('error|warning')));
+        assertEquals(6, count($flash->get('error|success')));
+
+        assertEquals(7, count($flash->get('warning|success')));
+
+        assertEquals(6, count($flash->get('info|error|warning')));
+        assertEquals(7, count($flash->get('info|error|success')));
+
+        assertEquals(8, count($flash->get('info|warning|success')));
+
+        assertEquals(10, count($flash->get('info|error|warning|success')));
+    }
+
+    public function test_it_can_accept_invalid_level_value()
+    {
+        $flash = $this->getFlash();
+
+        $flash->message('message', 'random level');
+
+        assertEquals(1, count($flash->get()));
+    }
+
+    public function test_it_creates_overlay_message()
+    {
+        $flash = $this->getFlash();
+
+        $message = [
+            'message' => 'overlaid message',
+            'title'   => 'message title',
+            'level'   => 'info',
+            'overlay' => true,
+        ];
+
+        $flash->overlay($message['message'], $message['title'], $message['level'], $message['overlay']);
+
+        $notifications = $flash->get();
+
+        assertEquals(1, count($notifications));
+
+        $key = md5(implode('', array_values($message)));
+        assertArrayHasKey($key, $notifications->toArray());
+
+        assertEquals($message['message'], $notifications->get($key)['message']);
     }
 
     /**
