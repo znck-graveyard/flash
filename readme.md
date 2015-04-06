@@ -1,4 +1,5 @@
-# Flash ![](https://img.shields.io/github/issues/znck/flash.svg) ![](https://img.shields.io/travis/znck/flash.svg) ![](https://img.shields.io/github/release/znck/flash.svg) ![](https://img.shields.io/packagist/v/znck/flash.svg) ![](https://img.shields.io/packagist/dt/znck/flash.svg) ![](https://img.shields.io/packagist/l/znck/flash.svg)
+# Flash [![](https://img.shields.io/github/issues/znck/flash.svg)](https://github.com/znck/flash/issues) [![](https://img.shields.io/travis/znck/flash.svg)](https://travis-ci.org/znck/flash) [![](https://img.shields.io/github/release/znck/flash.svg)](https://github.com/znck/flash/releases) [![](https://img.shields.io/packagist/v/znck/flash.svg)](https://packagist.org/packages/znck/flash) [![](https://img.shields.io/packagist/dt/znck/flash.svg)](https://packagist.org/packages/znck/flash)  [![](https://img.shields.io/packagist/l/znck/flash.svg)](http://znck.mit-license.org)
+
 Easy flash notifications for Laravel 5
 
 ## Installation
