@@ -65,7 +65,6 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
         assertEquals(1, count($notifications));
         assertArrayHasKey($key, $notifications->toArray());
-
         $notification = $notifications->get($key);
 
         assertEquals($message, $notification['message']);
