@@ -5,22 +5,6 @@ use Mockery as m;
 class FlashTest extends Orchestra\Testbench\TestCase
 {
 
-    /**
-     * @return \Znck\Flash\FlashNotifier
-     */
-    private function getFlash()
-    {
-        return $this->app->make('\Znck\Flash\FlashNotifier');
-    }
-
-    /**
-     * @return \Illuminate\Session\Store
-     */
-    private function getSession()
-    {
-        return $this->app['session'];
-    }
-
     public function test_it_sets_session_key()
     {
         $flash = $this->getFlash();
@@ -29,12 +13,28 @@ class FlashTest extends Orchestra\Testbench\TestCase
         $this->getSession()->flush();
     }
 
+    /**
+     * @return \Znck\Flash\FlashNotifier
+     */
+    protected function getFlash()
+    {
+        return $this->app->make('\Znck\Flash\FlashNotifier');
+    }
+
+    /**
+     * @return \Illuminate\Session\Store
+     */
+    protected function getSession()
+    {
+        return $this->app['session'];
+    }
+
     public function test_it_loads_messages_from_session()
     {
         $flash1 = $this->getFlash();
         $flash1->message('Test Message');
         $flash2 = $this->getFlash();
-        assertEquals(1, count($flash2->get()));
+        $this->assertEquals(1, count($flash2->get()), 'It is loading messages from session.');
     }
 
     public function test_if_can_flash_error_message()
@@ -46,12 +46,12 @@ class FlashTest extends Orchestra\Testbench\TestCase
         $flash->error($message);
         $notifications = $flash->get('error');
 
-        assertEquals(1, count($notifications));
-        assertArrayHasKey($key, $notifications->toArray());
+        $this->assertEquals(1, count($notifications));
+        $this->assertArrayHasKey($key, $notifications->toArray());
 
         $notification = $notifications->get($key);
 
-        assertEquals($message, $notification['message']);
+        $this->assertEquals($message, $notification['message']);
     }
 
     public function test_it_can_flash_warning_message()
@@ -63,11 +63,11 @@ class FlashTest extends Orchestra\Testbench\TestCase
         $flash->warning($message);
         $notifications = $flash->get('warning');
 
-        assertEquals(1, count($notifications));
-        assertArrayHasKey($key, $notifications->toArray());
+        $this->assertEquals(1, count($notifications));
+        $this->assertArrayHasKey($key, $notifications->toArray());
         $notification = $notifications->get($key);
 
-        assertEquals($message, $notification['message']);
+        $this->assertEquals($message, $notification['message']);
     }
 
     public function test_it_can_flash_many_messages()
@@ -90,7 +90,7 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
         $notifications = $flash->get();
 
-        assertEquals(count($messages), count($notifications));
+        $this->assertEquals(count($messages), count($notifications));
     }
 
     public function test_it_flashes_message_only_once()
@@ -112,7 +112,7 @@ class FlashTest extends Orchestra\Testbench\TestCase
         }
 
         $notifications = $flash->get();
-        assertEquals(count(array_unique($messages)), count($notifications));
+        $this->assertEquals(count(array_unique($messages)), count($notifications));
     }
 
     public function test_it_returns_filtered_messages()
@@ -136,26 +136,26 @@ class FlashTest extends Orchestra\Testbench\TestCase
             $flash->message($message['message'], $message['level']);
         }
 
-        assertEquals(1, count($flash->get('info')));
-        assertEquals(2, count($flash->get('error')));
-        assertEquals(3, count($flash->get('warning')));
-        assertEquals(4, count($flash->get('success')));
+        $this->assertEquals(1, count($flash->get('info')));
+        $this->assertEquals(2, count($flash->get('error')));
+        $this->assertEquals(3, count($flash->get('warning')));
+        $this->assertEquals(4, count($flash->get('success')));
 
-        assertEquals(3, count($flash->get('info|error')));
-        assertEquals(4, count($flash->get('info|warning')));
-        assertEquals(5, count($flash->get('info|success')));
+        $this->assertEquals(3, count($flash->get('info|error')));
+        $this->assertEquals(4, count($flash->get('info|warning')));
+        $this->assertEquals(5, count($flash->get('info|success')));
 
-        assertEquals(5, count($flash->get('error|warning')));
-        assertEquals(6, count($flash->get('error|success')));
+        $this->assertEquals(5, count($flash->get('error|warning')));
+        $this->assertEquals(6, count($flash->get('error|success')));
 
-        assertEquals(7, count($flash->get('warning|success')));
+        $this->assertEquals(7, count($flash->get('warning|success')));
 
-        assertEquals(6, count($flash->get('info|error|warning')));
-        assertEquals(7, count($flash->get('info|error|success')));
+        $this->assertEquals(6, count($flash->get('info|error|warning')));
+        $this->assertEquals(7, count($flash->get('info|error|success')));
 
-        assertEquals(8, count($flash->get('info|warning|success')));
+        $this->assertEquals(8, count($flash->get('info|warning|success')));
 
-        assertEquals(10, count($flash->get('info|error|warning|success')));
+        $this->assertEquals(10, count($flash->get('info|error|warning|success')));
     }
 
     public function test_it_can_accept_invalid_level_value()
@@ -164,7 +164,7 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
         $flash->message('message', 'random level');
 
-        assertEquals(1, count($flash->get()));
+        $this->assertEquals(1, count($flash->get()));
     }
 
     public function test_it_creates_overlay_message()
@@ -182,12 +182,12 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
         $notifications = $flash->get();
 
-        assertEquals(1, count($notifications));
+        $this->assertEquals(1, count($notifications));
 
         $key = md5(implode('', array_values($message)));
-        assertArrayHasKey($key, $notifications->toArray());
+        $this->assertArrayHasKey($key, $notifications->toArray());
 
-        assertEquals($message['message'], $notifications->get($key)['message']);
+        $this->assertEquals($message['message'], $notifications->get($key)['message']);
     }
 
     protected function getPackageProviders($application)

@@ -17,7 +17,7 @@
   "require-dev": {
     "orchestra/testbench": "3.1.*",
     "mockery/mockery": "dev-master",
-    "phpunit/phpunit": "~4.8@dev"
+    "phpunit/phpunit": "~4.8"
   },
   "autoload": {
     "psr-4": {
@@ -27,5 +27,6 @@
       "src/Flash/functions.php"
     ]
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
