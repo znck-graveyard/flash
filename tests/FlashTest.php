@@ -5,28 +5,34 @@ use Mockery as m;
 class FlashTest extends Orchestra\Testbench\TestCase
 {
 
-    protected function getPackageProviders()
-    {
-        return ['Znck\Flash\FlashServiceProvider'];
-    }
-
     public function test_it_sets_session_key()
     {
-
         $flash = $this->getFlash();
-
         $flash->error('error message');
-
         $this->assertSessionHas('znck.flash.notifications');
-
         $this->getSession()->flush();
+    }
+
+    /**
+     * @return \Znck\Flash\FlashNotifier
+     */
+    private function getFlash()
+    {
+        return $this->app->make('\Znck\Flash\FlashNotifier');
+    }
+
+    /**
+     * @return \Illuminate\Session\Store
+     */
+    private function getSession()
+    {
+        return $this->app['session'];
     }
 
     public function test_it_loads_messages_from_session()
     {
         $flash1 = $this->getFlash();
         $flash1->message('Test Message');
-
         $flash2 = $this->getFlash();
         assertEquals(1, count($flash2->get()));
     }
@@ -35,46 +41,34 @@ class FlashTest extends Orchestra\Testbench\TestCase
     {
         $message = 'Error Message';
         $level = 'error';
-
         $key = md5($message . $level);
-
         $flash = $this->getFlash();
         $flash->error($message);
-
         $notifications = $flash->get('error');
 
-
         assertEquals(1, count($notifications));
-
         assertArrayHasKey($key, $notifications->toArray());
 
         $notification = $notifications->get($key);
 
         assertEquals($message, $notification['message']);
-
     }
 
     public function test_it_can_flash_warning_message()
     {
         $message = 'Warning Message';
         $level = 'warning';
-
         $key = md5($message . $level);
-
         $flash = $this->getFlash();
         $flash->warning($message);
-
         $notifications = $flash->get('warning');
 
-
         assertEquals(1, count($notifications));
-
         assertArrayHasKey($key, $notifications->toArray());
 
         $notification = $notifications->get($key);
 
         assertEquals($message, $notification['message']);
-
     }
 
     public function test_it_can_flash_many_messages()
@@ -119,7 +113,6 @@ class FlashTest extends Orchestra\Testbench\TestCase
         }
 
         $notifications = $flash->get();
-
         assertEquals(count(array_unique($messages)), count($notifications));
     }
 
@@ -198,19 +191,8 @@ class FlashTest extends Orchestra\Testbench\TestCase
         assertEquals($message['message'], $notifications->get($key)['message']);
     }
 
-    /**
-     * @return \Illuminate\Session\Store
-     */
-    private function getSession()
+    protected function getPackageProviders()
     {
-        return $this->app['session'];
-    }
-
-    /**
-     * @return \Znck\Flash\FlashNotifier
-     */
-    private function getFlash()
-    {
-        return $this->app->make('\Znck\Flash\FlashNotifier');
+        return ['Znck\Flash\FlashServiceProvider'];
     }
 }
