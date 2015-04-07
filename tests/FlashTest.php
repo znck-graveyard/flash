@@ -5,7 +5,7 @@ use Mockery as m;
 class FlashTest extends Orchestra\Testbench\TestCase
 {
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders()
     {
         return ['Znck\Flash\FlashServiceProvider'];
     }
