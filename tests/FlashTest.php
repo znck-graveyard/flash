@@ -5,14 +5,6 @@ use Mockery as m;
 class FlashTest extends Orchestra\Testbench\TestCase
 {
 
-    public function test_it_sets_session_key()
-    {
-        $flash = $this->getFlash();
-        $flash->error('error message');
-        $this->assertSessionHas('znck.flash.notifications');
-        $this->getSession()->flush();
-    }
-
     /**
      * @return \Znck\Flash\FlashNotifier
      */
@@ -27,6 +19,14 @@ class FlashTest extends Orchestra\Testbench\TestCase
     private function getSession()
     {
         return $this->app['session'];
+    }
+
+    public function test_it_sets_session_key()
+    {
+        $flash = $this->getFlash();
+        $flash->error('error message');
+        $this->assertSessionHas('znck.flash.notifications');
+        $this->getSession()->flush();
     }
 
     public function test_it_loads_messages_from_session()
@@ -190,7 +190,7 @@ class FlashTest extends Orchestra\Testbench\TestCase
         assertEquals($message['message'], $notifications->get($key)['message']);
     }
 
-    protected function getPackageProviders()
+    protected function getPackageProviders($application)
     {
         return ['Znck\Flash\FlashServiceProvider'];
     }
