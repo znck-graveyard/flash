@@ -2,7 +2,6 @@
 
 use Illuminate\Session\Store;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Debug\Dumper;
 
 /**
  * Class FlashNotifier
@@ -11,7 +10,7 @@ use Illuminate\Support\Debug\Dumper;
  */
 class FlashNotifier
 {
-    private $levels = [
+    private $levels  = [
         'info'    => 100,
         'success' => 200,
         'warning' => 300,
@@ -122,7 +121,11 @@ class FlashNotifier
      */
     public function overlay($message, $title = 'Notice', $level = 'info', $overlay = true)
     {
-        $this->messages->put(md5($message . $title . $level . $overlay), compact('message', 'level', 'title', 'overlay'));
+        $sort = array_get($this->levels, $level, 0);
+        $level = array_get($this->classes, $level, 'info');
+
+        $this->messages->put(md5($message . $title . $level . $overlay),
+            compact('message', 'level', 'title', 'overlay', 'sort'));
 
         $this->session->flash($this->getFlashSessionKey(), $this->messages);
 
