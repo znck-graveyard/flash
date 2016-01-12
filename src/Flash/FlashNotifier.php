@@ -1,16 +1,16 @@
-<?php namespace Znck\Flash;
+<?php
+
+namespace Znck\Flash;
 
 use Illuminate\Session\Store;
 use Illuminate\Support\Collection;
 
 /**
- * Class FlashNotifier
- *
- * @package Znck\Flash
+ * Class FlashNotifier.
  */
 class FlashNotifier
 {
-    private $levels  = [
+    private $levels = [
         'info'    => 100,
         'success' => 200,
         'warning' => 300,
@@ -25,14 +25,14 @@ class FlashNotifier
     /**
      * The message container.
      *
-     * @type \Illuminate\Support\Collection
+     * @var \Illuminate\Support\Collection
      */
     private $messages;
 
     /**
      * The session store.
      *
-     * @type \Illuminate\Session\Store
+     * @var \Illuminate\Session\Store
      */
     private $session;
 
@@ -42,7 +42,7 @@ class FlashNotifier
      * @param \Illuminate\Session\Store      $session
      * @param \Illuminate\Support\Collection $messages
      */
-    function __construct(Store $session, Collection $messages)
+    public function __construct(Store $session, Collection $messages)
     {
         $this->session = $session;
         $this->messages = $messages;
@@ -68,7 +68,7 @@ class FlashNotifier
     /**
      * Flash a success message.
      *
-     * @param  string $message
+     * @param string $message
      *
      * @return $this
      */
@@ -82,7 +82,7 @@ class FlashNotifier
     /**
      * Flash an error message.
      *
-     * @param  string $message
+     * @param string $message
      *
      * @return $this
      */
@@ -96,7 +96,7 @@ class FlashNotifier
     /**
      * Flash a warning message.
      *
-     * @param  string $message
+     * @param string $message
      *
      * @return $this
      */
@@ -110,21 +110,19 @@ class FlashNotifier
     /**
      * Flash an overlay modal.
      *
-     * @param  string $message
-     * @param  string $title
-     *
-     * @param string  $level
-     * @param bool    $overlay
+     * @param string $message
+     * @param string $title
+     * @param string $level
+     * @param bool   $overlay
      *
      * @return $this
-     *
      */
     public function overlay($message, $title = 'Notice', $level = 'info', $overlay = true)
     {
         $sort = array_get($this->levels, $level, 0);
         $level = array_get($this->classes, $level, 'info');
 
-        $this->messages->put(md5($message . $title . $level . $overlay),
+        $this->messages->put(md5($message.$title.$level.$overlay),
             compact('message', 'level', 'title', 'overlay', 'sort'));
 
         $this->session->flash($this->getFlashSessionKey(), $this->messages);
@@ -135,14 +133,14 @@ class FlashNotifier
     /**
      * Flash a general message.
      *
-     * @param  string $message
-     * @param  string $level
+     * @param string $message
+     * @param string $level
      *
      * @return $this
      */
     public function message($message, $level = 'info')
     {
-        $key = md5($message . $level);
+        $key = md5($message.$level);
         $sort = array_get($this->levels, $level, 0);
         $level = array_get($this->classes, $level, 'info');
         $this->messages->put($key, compact('message', 'level', 'sort'));
@@ -217,7 +215,6 @@ class FlashNotifier
             return $notifications;
         }
 
-        return new Collection;
+        return new Collection();
     }
-
 }

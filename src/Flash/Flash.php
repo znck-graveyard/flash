@@ -1,11 +1,13 @@
-<?php namespace Znck\Flash;
+<?php
+
+namespace Znck\Flash;
 
 use Illuminate\Support\Facades\Facade;
 
-class Flash extends Facade {
-
+class Flash extends Facade
+{
     /**
-     * Get the binding in the IoC container
+     * Get the binding in the IoC container.
      *
      * @return string
      */
@@ -13,5 +15,4 @@ class Flash extends Facade {
     {
         return 'flash';
     }
-
 }
