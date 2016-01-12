@@ -19,7 +19,7 @@ class FlashServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bindShared('flash', function () {
+        $this->app->singleton('flash', function () {
             return $this->app->make('Znck\Flash\FlashNotifier');
         });
 
