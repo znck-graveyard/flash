@@ -1,10 +1,8 @@
 <?php
 
-use Mockery as m;
 
 class FlashTest extends Orchestra\Testbench\TestCase
 {
-
     public function test_it_sets_session_key()
     {
         $flash = $this->getFlash();
@@ -41,7 +39,7 @@ class FlashTest extends Orchestra\Testbench\TestCase
     {
         $message = 'Error Message';
         $level = 'error';
-        $key = md5($message . $level);
+        $key = md5($message.$level);
         $flash = $this->getFlash();
         $flash->error($message);
         $notifications = $flash->get('error');
@@ -58,7 +56,7 @@ class FlashTest extends Orchestra\Testbench\TestCase
     {
         $message = 'Warning Message';
         $level = 'warning';
-        $key = md5($message . $level);
+        $key = md5($message.$level);
         $flash = $this->getFlash();
         $flash->warning($message);
         $notifications = $flash->get('warning');
@@ -72,7 +70,6 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
     public function test_it_can_flash_many_messages()
     {
-
         $messages = [
             'message 1',
             'message 2',
@@ -95,7 +92,6 @@ class FlashTest extends Orchestra\Testbench\TestCase
 
     public function test_it_flashes_message_only_once()
     {
-
         $messages = [
             'message 1',
             'message 2',

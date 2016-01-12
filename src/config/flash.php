@@ -13,5 +13,5 @@ return [
         'warning' => 300,
         'success' => 200,
         'info'    => 100,
-    ]
+    ],
 ];

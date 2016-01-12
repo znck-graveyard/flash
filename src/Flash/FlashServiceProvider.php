@@ -1,10 +1,11 @@
-<?php namespace Znck\Flash;
+<?php
+
+namespace Znck\Flash;
 
 use Illuminate\Support\ServiceProvider;
 
 class FlashServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -23,7 +24,7 @@ class FlashServiceProvider extends ServiceProvider
             return $this->app->make('Znck\Flash\FlashNotifier');
         });
 
-        $this->mergeConfigFrom(__DIR__ . '/../config/flash.php', 'znck.flash');
+        $this->mergeConfigFrom(__DIR__.'/../config/flash.php', 'znck.flash');
     }
 
     /**
@@ -33,11 +34,11 @@ class FlashServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__ . '/../views', 'znck');
+        $this->loadViewsFrom(__DIR__.'/../views', 'znck');
 
         $this->publishes([
-            __DIR__ . '/../views'            => base_path('resources/views/vendor/znck/flash'),
-            __DIR__ . '/../config/flash.php' => config_path('znck/flash.php'),
+            __DIR__.'/../views'            => base_path('resources/views/vendor/znck/flash'),
+            __DIR__.'/../config/flash.php' => config_path('znck/flash.php'),
         ]);
     }
 
@@ -45,6 +46,4 @@ class FlashServiceProvider extends ServiceProvider
     {
         return ['flash'];
     }
-
-
 }
